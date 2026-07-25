@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PoseTrackerConfig } from '../types/pose';
 
 interface TopBarProps {
@@ -16,21 +16,41 @@ export default function TopBar({
   fps,
   isModelLoading
 }: TopBarProps) {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   return (
     <div className="top-bar-wrapper glass-panel">
-      <div className="top-bar-title">
-        <span className="title-glow">POSE</span>
-        <span>SPOTTER</span>
-        <div 
-          className="pulse-dot" 
-          style={{ 
-            backgroundColor: isModelLoading ? 'hsl(var(--accent-orange))' : 'hsl(var(--accent-green))',
-            boxShadow: isModelLoading ? '0 0 8px hsl(var(--accent-orange))' : '0 0 8px hsl(var(--accent-green))'
-          }} 
-        />
+      <div className="top-bar-title-row" style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="top-bar-title">
+          <span className="title-glow">POSE</span>
+          <span>SPOTTER</span>
+          <div 
+            className="pulse-dot" 
+            style={{ 
+              backgroundColor: isModelLoading ? 'hsl(var(--accent-orange))' : 'hsl(var(--accent-green))',
+              boxShadow: isModelLoading ? '0 0 8px hsl(var(--accent-orange))' : '0 0 8px hsl(var(--accent-green))'
+            }} 
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Mobile FPS Counter */}
+          <div className="mobile-fps-display" style={{ display: 'none', fontFamily: 'var(--font-mono)', fontSize: '0.825rem', fontWeight: 600, color: fps > 25 ? 'hsl(var(--accent-green))' : 'hsl(var(--accent-orange))' }}>
+            {fps} FPS
+          </div>
+
+          <button 
+            className={`btn-glass settings-toggle-btn ${isSettingsOpen ? 'active' : ''}`}
+            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            style={{ display: 'none', padding: '6px 12px', fontSize: '0.75rem', gap: '5px' }}
+          >
+            <span>⚙️</span>
+            <span>{isSettingsOpen ? 'CLOSE' : 'SETTINGS'}</span>
+          </button>
+        </div>
       </div>
 
-      <div className="controls-group">
+      <div className={`controls-group ${isSettingsOpen ? 'mobile-open' : ''}`}>
         {/* Camera Selector */}
         <div className="control-item">
           <label htmlFor="camera-select">Camera Source</label>

@@ -217,28 +217,52 @@ export default function PoseTracker() {
   // Bind WebRTC camera stream to video element
   useEffect(() => {
     let activeStream: MediaStream | null = null;
-
+    
     async function bindCamera() {
       if (!videoRef.current || !config.activeCameraId) return;
+      if (typeof navigator === 'undefined' || !navigator.mediaDevices) {
+        console.error("WEBCAM BIND BLOCKED: navigator.mediaDevices is undefined (insecure connection).");
+        return;
+      }
 
       try {
         if (activeStream) {
           activeStream.getTracks().forEach(track => track.stop());
         }
 
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            deviceId: { exact: config.activeCameraId },
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
+        let stream: MediaStream;
+        try {
+          // Attempt exact matching with high resolution ideal values
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              deviceId: { exact: config.activeCameraId },
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
+            }
+          });
+        } catch (constraintErr) {
+          console.warn("Exact camera constraints failed, attempting fallback camera select...", constraintErr);
+          try {
+            // Fallback 1: ID select without specific resolution constraints
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: {
+                deviceId: { exact: config.activeCameraId }
+              }
+            });
+          } catch (idErr) {
+            console.warn("Device ID binding failed, attempting generic user camera facing mode...", idErr);
+            // Fallback 2: Default user/selfie camera (vital for mobile web contexts)
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: 'user' }
+            });
           }
-        });
+        }
 
         activeStream = stream;
         videoRef.current.srcObject = stream;
         videoRef.current.play();
       } catch (err) {
-        console.error("Failed to bind webcam:", err);
+        console.error("Camera access error:", err);
       }
     }
 
@@ -514,7 +538,7 @@ export default function PoseTracker() {
 
       {/* Dynamic On-Screen Console Logger for Mobile Debugging */}
       <div
-        className="glass-panel"
+        className="glass-panel mobile-debug-panel"
         style={{
           position: 'absolute',
           top: '120px',

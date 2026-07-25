@@ -538,3 +538,117 @@ html, body {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- Mobile Responsiveness and UI Optimizations --- */
+@media (max-width: 768px) {
+  /* Top floating settings bar collapsed styling */
+  .top-bar-wrapper {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 10px 14px;
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Toggle button and live FPS indicator inside header */
+  .settings-toggle-btn {
+    display: inline-flex !important;
+  }
+  
+  .mobile-fps-display {
+    display: inline-block !important;
+  }
+
+  /* Hide redundant performance block in mobile drawer list */
+  .controls-group .control-item:last-child {
+    display: none;
+  }
+
+  /* Sliding drawer menu for inputs */
+  .controls-group {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 14px;
+    padding: 18px;
+    background: rgba(10, 12, 20, 0.96);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .controls-group.mobile-open {
+    display: flex !important;
+    animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .control-item {
+    width: 100%;
+  }
+
+  .select-glass {
+    width: 100%;
+  }
+
+  /* Coordinates grid panel relocations */
+  .coords-panel-wrapper {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: 160px;
+    border-radius: var(--radius-sm);
+  }
+
+  .coords-content-scroll {
+    padding: 8px;
+  }
+
+  .coords-grid {
+    grid-template-columns: 2.2fr 1.6fr 1.6fr 1.6fr 1.4fr;
+    gap: 4px 2px;
+    font-size: 0.62rem;
+  }
+
+  .coords-grid-header {
+    font-size: 0.58rem;
+    padding-bottom: 2px;
+    margin-bottom: 2px;
+  }
+
+  /* Match pose banner sits safely above coordinates grid */
+  .pose-badge-wrapper {
+    bottom: 180px;
+    left: 10px;
+    right: 10px;
+    min-width: auto;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+  }
+
+  .pose-name {
+    font-size: 1.15rem;
+  }
+
+  /* Debug logs panel alignment */
+  .mobile-debug-panel {
+    top: 70px !important;
+    left: 10px !important;
+    width: calc(100% - 20px) !important;
+    max-height: 140px !important;
+  }
+}
+
